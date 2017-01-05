@@ -398,86 +398,8 @@ public class mainAuto extends LinearOpMode {
     public double limit(double a) {
         return Math.min(Math.max(a, MIN_MOTOR_OUTPUT_VALUE), MAX_MOTOR_OUTPUT_VALUE);
     }
-    public void driveStraight(double drive_speed){
-        navx_device.zeroYaw();
+    public void driveStraight(){
 
-        /* Wait for new Yaw PID output values, then update the motors
-           with the new PID value with each new output value.
-         */
-
-        final double TOTAL_RUN_TIME_SECONDS = 10.0;
-        int DEVICE_TIMEOUT_MS = 500;
-        navXPIDController.PIDResult yawPIDResult = new navXPIDController.PIDResult();
-        DecimalFormat df = new DecimalFormat("#.##");
-        try {
-            while ((runtime.time() < TOTAL_RUN_TIME_SECONDS) &&
-                    !Thread.currentThread().isInterrupted()) {
-                if (yawPIDController.waitForNewUpdate(yawPIDResult, DEVICE_TIMEOUT_MS)) {
-                    if (yawPIDResult.isOnTarget()) {
-                        motorLeft.setPower(drive_speed );
-                        motorRight.setPower(drive_speed);
-                        telemetry.addData("PIDOutput", df.format(drive_speed) + ", " +
-                                df.format(drive_speed));
-                    } else {
-                        double output = yawPIDResult.getOutput();
-                        motorLeft.setPower(drive_speed + output);
-                        motorRight.setPower(drive_speed - output);
-                        telemetry.addData("PIDOutput", df.format(limit(drive_speed + output)) + ", " +
-                                df.format(limit(drive_speed - output)));
-                    }
-                    telemetry.addData("Yaw", df.format(navx_device.getYaw()));
-                } else{
-			        /* A timeout occurred */
-                    Log.w("navXDriveStraightOp", "Yaw PID waitForNewUpdate() TIMEOUT.");
-                }
-            }
-        }
-        catch(InterruptedException ex) {
-            Thread.currentThread().interrupt();
-        }
-        finally {
-            navx_device.close();
-            telemetry.addData("LinearOp", "Complete");
-        }
-    }
-    public void driveToWall(){
-        isRobotFlush = false;
-        numberOfCycles = 0;
-        timer1.reset();
-        if(distanceSensorSonar >= 40){
-            setPower(0.5);
-            isRobotFlush = false;
-        } else if(distanceSensorSonar >= 9 && distanceSensorSonar < 40){
-            setPower(0.2);
-            isRobotFlush = false;
-        } else if(distanceSensorSonar < 9){
-            timer1.startTime();
-            while(timer1.seconds() < 0.5){
-                motorLeft.setPower(0);
-                motorRight.setPower(.25);
-                isRobotFlush = false;
-            } while(timer1.seconds() >= 0.5 && timer1.seconds() < 1){
-                motorRight.setPower(0);
-                motorLeft.setPower(.25);
-                isRobotFlush = false;
-            }
-                isRobotFlush = true;
-        }
-    }
-    public void setPower(double power){
-        motorLeft.setPower(power);
-        motorRight.setPower(power);
-    }
-    public void lineFollower(){
-        double threshold = (0.06 + 0.3) / 2;
-        if(distanceSensor1.getLightDetected() < threshold){
-            motorLeft.setPower(-0.78);
-            motorRight.setPower(-0.25);
-
-        } else {
-            motorLeft.setPower(-0.25);
-            motorRight.setPower(-0.78);
-        }
     }
 }
 

@@ -137,15 +137,17 @@ public class ConceptNavXRotateToAnglePIDLoopOp extends OpMode {
             /* Wait for new Yaw PID output values, then update the motors
                with the new PID value with each new output value.
              */
+        telemetry.addData("Yaw", df.format(navx_device.getYaw()));
+
             if (yawPIDController.isNewUpdateAvailable(yawPIDResult)) {
                 if (yawPIDResult.isOnTarget()) {
-                    leftMotor.setPowerFloat();
-                    rightMotor.setPowerFloat();
+                    //leftMotor.setPowerFloat();
+                    //rightMotor.setPowerFloat();
                     telemetry.addData("Motor Output", df.format(0.00));
                 } else {
                     double output = yawPIDResult.getOutput();
-                    leftMotor.setPower(output);
-                    rightMotor.setPower(-output);
+                    //leftMotor.setPower(output);
+                    //rightMotor.setPower(-output);
                     telemetry.addData("Motor Output", df.format(output) + ", " +
                             df.format(-output));
                 }

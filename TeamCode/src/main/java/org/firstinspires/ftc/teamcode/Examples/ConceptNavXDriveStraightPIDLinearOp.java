@@ -72,11 +72,11 @@ public class ConceptNavXDriveStraightPIDLinearOp extends LinearOpMode {
 
     private final byte NAVX_DEVICE_UPDATE_RATE_HZ = 50;
 
-    private final double TARGET_ANGLE_DEGREES = 0.0;
+    private final double TARGET_ANGLE_DEGREES = 90;
     private final double TOLERANCE_DEGREES = 2.0;
-    private final double MIN_MOTOR_OUTPUT_VALUE = -1.0;
-    private final double MAX_MOTOR_OUTPUT_VALUE = 1.0;
-    private final double YAW_PID_P = 0.005;
+    private final double MIN_MOTOR_OUTPUT_VALUE = -0.25;
+    private final double MAX_MOTOR_OUTPUT_VALUE = 0.25;
+    private final double YAW_PID_P = 0.125;
     private final double YAW_PID_I = 0.0;
     private final double YAW_PID_D = 0.0;
 
@@ -88,8 +88,8 @@ public class ConceptNavXDriveStraightPIDLinearOp extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        leftMotor = hardwareMap.dcMotor.get("left motor");
-        rightMotor = hardwareMap.dcMotor.get("right motor");
+        leftMotor = hardwareMap.dcMotor.get("motorLeft");
+        rightMotor = hardwareMap.dcMotor.get("motorRight");
 
         navx_device = AHRS.getInstance(hardwareMap.deviceInterfaceModule.get("dim"),
                 NAVX_DIM_I2C_PORT,
@@ -100,8 +100,8 @@ public class ConceptNavXDriveStraightPIDLinearOp extends LinearOpMode {
 
         /* If possible, use encoders when driving, as it results in more */
         /* predictable drive system response.                           */
-        //leftMotor.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
-        //rightMotor.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
+        leftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         /* Create a PID Controller which uses the Yaw Angle as input. */
         yawPIDController = new navXPIDController( navx_device,
